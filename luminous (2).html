@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luminous — A Message from Today, Delivered to Tomorrow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;500;600;700&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --midnight:#080B25;
+  --midnight-2:#10153C;
+  --indigo:#1B1E54;
+  --indigo-2:#262A6E;
+  --royal-purple:#4F2A86;
+  --purple-glow:#8B5CF6;
+  --gold:#E8BE5C;
+  --gold-bright:#FBDE8C;
+  --cyan:#5EEAD4;
+  --cyan-bright:#8FF7E8;
+  --parchment:#F3E9D2;
+  --parchment-dark:#E2D2A8;
+  --ink:#241B10;
+  --ink-soft:#4A3A22;
+  --text-light:#E9E7F7;
+  --text-muted:#9C9DC4;
+  --text-faint:#6B6C95;
+  --danger:#E0735C;
+  --font-display:'Cinzel Decorative', serif;
+  --font-head:'Cinzel', serif;
+  --font-body:'Spectral', serif;
+  --font-mono:'JetBrains Mono', monospace;
+  --radius-s:8px;
+  --radius-m:14px;
+  --radius-l:22px;
+  --shadow-glow-gold: 0 0 28px rgba(232,190,92,0.35);
+  --shadow-glow-cyan: 0 0 28px rgba(94,234,212,0.30);
+  --shadow-glow-purple: 0 0 32px rgba(139,92,246,0.35);
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:radial-gradient(ellipse at 50% -10%, var(--indigo-2) 0%, var(--midnight) 55%, #050714 100%);
+  color:var(--text-light);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  min-height:100vh;
+  position:relative;
+}
+a{color:inherit; text-decoration:none;}
+button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+ul{list-style:none;}
+input,select,textarea{font-family:inherit; color:var(--ink); background:var(--parchment);}
+
+::selection{background:var(--purple-glow); color:#fff;}
+
+:focus-visible{
+  outline:2px solid var(--cyan-bright);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+}
+
+/* ============ STARFIELD ============ */
+#starfield{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+}
+
+/* ============ SCROLLBAR ============ */
+::-webkit-scrollbar{width:10px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--indigo-2); border-radius:8px;}
+
+/* ============ LAYOUT SHELL ============ */
+#app{position:relative; z-index:1; min-height:100vh;}
+
+/* ============ NAV (landing) ============ */
+.landing-nav{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:22px 5vw;
+  position:relative; z-index:5;
+}
+.brand{
+  display:flex; align-items:center; gap:10px;
+  font-family:var(--font-head); font-size:1.3rem; letter-spacing:0.06em; font-weight:600;
+  color:var(--gold-bright);
+}
+.brand-mark{
+  width:34px; height:34px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 55%, #9c7626 100%);
+  box-shadow:var(--shadow-glow-gold);
+  font-family:var(--font-display); color:var(--midnight); font-size:1rem; font-weight:900;
+}
+.landing-nav .nav-links{display:flex; gap:34px; align-items:center;}
+.landing-nav .nav-links a{
+  font-family:var(--font-head); font-size:0.78rem; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-muted); transition:color 0.25s;
+}
+.landing-nav .nav-links a:hover{color:var(--cyan-bright);}
+.nav-auth{display:flex; gap:14px; align-items:center;}
+
+.btn{
+  font-family:var(--font-head); font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:11px 22px; border-radius:999px; transition:all 0.25s ease;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn-ghost{color:var(--text-light); border:1px solid rgba(233,231,247,0.25);}
+.btn-ghost:hover{border-color:var(--cyan-bright); color:var(--cyan-bright); box-shadow:0 0 16px rgba(94,234,212,0.25);}
+.btn-gold{
+  background:linear-gradient(135deg, var(--gold-bright), var(--gold) 60%, #b8893a);
+  color:#2a1c06; font-weight:700; box-shadow:var(--shadow-glow-gold);
+}
+.btn-gold:hover{transform:translateY(-2px); box-shadow:0 0 36px rgba(232,190,92,0.55);}
+.btn-purple{
+  background:linear-gradient(135deg, var(--purple-glow), var(--royal-purple));
+  color:#fff; box-shadow:var(--shadow-glow-purple);
+}
+.btn-purple:hover{transform:translateY(-2px);}
+.btn-small{padding:8px 16px; font-size:0.7rem;}
+.btn-block{width:100%; justify-content:center;}
+.btn:disabled{opacity:0.4; cursor:not-allowed; transform:none !important;}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:88vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:6vh 6vw 4vh; position:relative;
+}
+.hero-eyebrow{
+  font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.3em; text-transform:uppercase;
+  color:var(--cyan-bright); margin-bottom:22px; opacity:0.85;
+}
+.hero h1{
+  font-family:var(--font-display); font-weight:900;
+  font-size:clamp(3rem, 8vw, 6.2rem);
+  line-height:0.95;
+  background:linear-gradient(180deg, #fff 0%, var(--gold-bright) 45%, var(--gold) 80%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 40px rgba(232,190,92,0.35));
+  letter-spacing:0.02em;
+}
+.hero-tagline{
+  font-family:var(--font-head); font-style:normal; font-size:clamp(1rem,2.2vw,1.35rem);
+  color:var(--text-light); margin-top:18px; letter-spacing:0.04em;
+}
+.hero-sub{
+  max-width:560px; margin:22px auto 0; color:var(--text-muted); font-size:1.05rem; line-height:1.65;
+  font-style:italic;
+}
+.hero-cta{display:flex; gap:18px; margin-top:42px; flex-wrap:wrap; justify-content:center;}
+.hero-scene{margin-top:64px; display:flex; gap:18px; flex-wrap:wrap; justify-content:center; max-width:900px;}
+
+/* ============ FEATURES ============ */
+.section{padding:8vh 6vw; position:relative;}
+.section-head{text-align:center; max-width:640px; margin:0 auto 56px;}
+.section-eyebrow{
+  font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.28em; text-transform:uppercase;
+  color:var(--gold-bright); margin-bottom:14px;
+}
+.section-head h2{
+  font-family:var(--font-head); font-size:clamp(1.8rem,3.4vw,2.6rem); font-weight:600; color:var(--text-light);
+}
+.section-head p{color:var(--text-muted); margin-top:14px; line-height:1.6;}
+
+.feature-grid{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:24px; max-width:1180px; margin:0 auto;
+}
+.scroll-card{
+  background:linear-gradient(165deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+  color:var(--ink); border-radius:var(--radius-m);
+  padding:28px 24px; position:relative; overflow:hidden;
+  box-shadow:0 18px 40px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(0,0,0,0.06);
+  transition:transform 0.3s ease, box-shadow 0.3s ease;
+}
+.scroll-card::before{
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:0.5;
+  background:repeating-linear-gradient(115deg, rgba(0,0,0,0.025) 0px, rgba(0,0,0,0.025) 1px, transparent 1px, transparent 9px);
+}
+.scroll-card:hover{transform:translateY(-6px); box-shadow:0 26px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(232,190,92,0.4);}
+.scroll-icon{
+  width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 35% 30%, var(--royal-purple), var(--midnight-2));
+  margin-bottom:16px; box-shadow:0 0 18px rgba(139,92,246,0.35);
+}
+.scroll-icon svg{width:22px; height:22px;}
+.scroll-card h3{font-family:var(--font-head); font-size:1.05rem; font-weight:700; margin-bottom:8px; color:var(--ink);}
+.scroll-card p{font-size:0.9rem; line-height:1.55; color:var(--ink-soft);}
+
+/* ============ FOOTER ============ */
+.landing-footer{
+  text-align:center; padding:48px 6vw 64px; color:var(--text-faint); font-size:0.78rem;
+  font-family:var(--font-mono); letter-spacing:0.05em;
+}
+.landing-footer .glyphs{color:var(--gold); letter-spacing:0.4em; margin-bottom:14px; font-size:0.9rem;}
+
+/* ============ AUTH MODAL ============ */
+.overlay{
+  position:fixed; inset:0; background:rgba(4,5,16,0.78); backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center; z-index:200; padding:24px;
+  animation:fadeIn 0.25s ease;
+}
+@keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+.modal{
+  background:linear-gradient(165deg, var(--indigo) 0%, var(--midnight-2) 100%);
+  border:1px solid rgba(232,190,92,0.25);
+  border-radius:var(--radius-l);
+  width:100%; max-width:460px; max-height:88vh; overflow-y:auto;
+  padding:36px 34px; position:relative;
+  box-shadow:0 0 60px rgba(139,92,246,0.25), 0 30px 60px rgba(0,0,0,0.6);
+  animation:riseIn 0.3s cubic-bezier(.2,.9,.3,1.2);
+}
+.modal.modal-wide{max-width:760px;}
+@keyframes riseIn{from{opacity:0; transform:translateY(18px) scale(0.97);} to{opacity:1; transform:translateY(0) scale(1);}}
+.modal-close{
+  position:absolute; top:18px; right:18px; width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; color:var(--text-muted);
+  background:rgba(255,255,255,0.06); transition:all 0.2s;
+}
+.modal-close:hover{color:var(--cyan-bright); background:rgba(94,234,212,0.12);}
+.modal h2{font-family:var(--font-head); font-size:1.5rem; color:var(--gold-bright); margin-bottom:6px;}
+.modal .modal-sub{color:var(--text-muted); font-size:0.88rem; margin-bottom:26px;}
+
+.field{margin-bottom:18px;}
+.field label{
+  display:block; font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--cyan-bright); margin-bottom:8px;
+}
+.field input, .field select, .field textarea{
+  width:100%; padding:12px 14px; border-radius:var(--radius-s); border:1px solid rgba(0,0,0,0.1);
+  font-size:0.92rem; background:var(--parchment);
+}
+.field textarea{resize:vertical; min-height:80px;}
+.field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.hint{font-size:0.74rem; color:var(--text-faint); margin-top:6px;}
+
+.avatar-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:8px;}
+.avatar-opt{
+  border:1.5px solid rgba(255,255,255,0.12); border-radius:var(--radius-m); padding:14px 8px;
+  display:flex; flex-direction:column; align-items:center; gap:8px; transition:all 0.2s; background:rgba(255,255,255,0.03);
+}
+.avatar-opt svg{width:30px; height:30px;}
+.avatar-opt span{font-size:0.66rem; font-family:var(--font-mono); letter-spacing:0.06em; color:var(--text-muted);}
+.avatar-opt.selected{border-color:var(--gold); background:rgba(232,190,92,0.12); box-shadow:0 0 16px rgba(232,190,92,0.25);}
+.avatar-opt:hover{border-color:var(--cyan);}
+
+.modal-actions{display:flex; gap:12px; margin-top:24px;}
+.modal-switch{text-align:center; margin-top:18px; font-size:0.82rem; color:var(--text-muted);}
+.modal-switch button{color:var(--cyan-bright); font-weight:600;}
+
+/* ============ APP SHELL (post-login) ============ */
+.app-shell{display:grid; grid-template-columns:240px 1fr; min-height:100vh;}
+.sidebar{
+  background:rgba(8,11,37,0.7); border-right:1px solid rgba(255,255,255,0.06);
+  padding:26px 18px; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;
+}
+.sidebar .brand{margin-bottom:30px; padding-left:6px;}
+.side-user{
+  display:flex; align-items:center; gap:10px; padding:10px 10px 18px; border-bottom:1px solid rgba(255,255,255,0.07); margin-bottom:18px;
+}
+.side-avatar{
+  width:42px; height:42px; border-radius:50%; flex-shrink:0;
+  background:radial-gradient(circle at 35% 30%, var(--purple-glow), var(--royal-purple));
+  display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-glow-purple);
+}
+.side-avatar svg{width:22px; height:22px;}
+.side-user-name{font-family:var(--font-head); font-size:0.88rem; font-weight:600; color:var(--text-light);}
+.side-user-level{font-family:var(--font-mono); font-size:0.68rem; color:var(--gold-bright);}
+
+.side-nav{display:flex; flex-direction:column; gap:4px; flex:1;}
+.side-nav button{
+  display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:var(--radius-s);
+  font-family:var(--font-head); font-size:0.84rem; letter-spacing:0.02em; color:var(--text-muted);
+  transition:all 0.2s; text-align:left;
+}
+.side-nav button svg{width:18px; height:18px; flex-shrink:0; opacity:0.8;}
+.side-nav button:hover{background:rgba(255,255,255,0.05); color:var(--text-light);}
+.side-nav button.active{background:linear-gradient(90deg, rgba(139,92,246,0.25), rgba(139,92,246,0.02)); color:var(--cyan-bright); box-shadow:inset 2px 0 0 var(--cyan-bright);}
+.side-foot{border-top:1px solid rgba(255,255,255,0.07); padding-top:16px; margin-top:12px;}
+
+.main{padding:36px 44px; max-width:1280px;}
+.topbar-xp{
+  display:flex; align-items:center; gap:16px; margin-bottom:34px; flex-wrap:wrap;
+}
+.xp-ring{
+  width:54px; height:54px; border-radius:50%; flex-shrink:0;
+  background:conic-gradient(var(--gold) calc(var(--pct,0) * 1%), rgba(255,255,255,0.08) 0);
+  display:flex; align-items:center; justify-content:center; position:relative;
+}
+.xp-ring::after{
+  content:""; position:absolute; inset:5px; border-radius:50%; background:var(--midnight-2);
+}
+.xp-ring-label{position:relative; z-index:1; font-family:var(--font-mono); font-weight:700; font-size:0.85rem; color:var(--gold-bright);}
+.xp-bar-wrap{flex:1; min-width:200px;}
+.xp-bar-top{display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted); margin-bottom:6px;}
+.xp-bar{height:10px; border-radius:999px; background:rgba(255,255,255,0.07); overflow:hidden;}
+.xp-bar-fill{height:100%; border-radius:999px; background:linear-gradient(90deg, var(--cyan), var(--gold-bright)); box-shadow:0 0 14px rgba(94,234,212,0.5); transition:width 0.6s ease;}
+
+.page-title{font-family:var(--font-head); font-size:1.7rem; color:var(--text-light); margin-bottom:4px;}
+.page-sub{color:var(--text-muted); font-size:0.92rem; margin-bottom:30px;}
+
+.dash-grid{display:grid; grid-template-columns:2fr 1fr; gap:24px;}
+.panel{
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:var(--radius-l);
+  padding:22px 22px 24px; margin-bottom:24px;
+}
+.panel-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
+.panel-head h3{font-family:var(--font-head); font-size:1rem; color:var(--gold-bright); letter-spacing:0.02em;}
+.panel-head a, .panel-head button.link{font-family:var(--font-mono); font-size:0.7rem; color:var(--cyan-bright); letter-spacing:0.04em;}
+
+.empty-state{
+  text-align:center; padding:30px 16px; color:var(--text-faint); font-size:0.85rem;
+  border:1px dashed rgba(255,255,255,0.12); border-radius:var(--radius-m);
+}
+
+/* memory mini card */
+.mem-row{
+  display:flex; align-items:center; gap:14px; padding:12px 10px; border-radius:var(--radius-s);
+  transition:background 0.2s; cursor:pointer;
+}
+.mem-row:hover{background:rgba(255,255,255,0.04);}
+.mem-row + .mem-row{border-top:1px solid rgba(255,255,255,0.05);}
+.mem-row-icon{
+  width:38px; height:38px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 35% 30%, var(--royal-purple), var(--midnight-2));
+}
+.mem-row-icon svg{width:18px; height:18px;}
+.mem-row-body{flex:1; min-width:0;}
+.mem-row-title{font-family:var(--font-head); font-size:0.88rem; color:var(--text-light); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.mem-row-meta{font-family:var(--font-mono); font-size:0.68rem; color:var(--text-faint); margin-top:2px;}
+.tag-pill{
+  font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.04em; padding:3px 9px; border-radius:999px;
+  background:rgba(94,234,212,0.12); color:var(--cyan-bright); white-space:nowrap;
+}
+.tag-pill.gold{background:rgba(232,190,92,0.14); color:var(--gold-bright);}
+.tag-pill.purple{background:rgba(139,92,246,0.18); color:#c4b0ff;}
+
+/* achievement badge mini */
+.badge-grid-mini{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+.badge{
+  display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 8px; border-radius:var(--radius-m);
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); text-align:center;
+  transition:all 0.25s;
+}
+.badge.unlocked{border-color:rgba(232,190,92,0.4); background:rgba(232,190,92,0.06); box-shadow:0 0 18px rgba(232,190,92,0.15);}
+.badge-icon{
+  width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,0.05); filter:grayscale(1) opacity(0.45);
+}
+.badge.unlocked .badge-icon{
+  background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 60%, #8a651f);
+  filter:none; box-shadow:0 0 16px rgba(232,190,92,0.5);
+}
+.badge-icon svg{width:20px; height:20px;}
+.badge-name{font-family:var(--font-head); font-size:0.68rem; color:var(--text-muted); line-height:1.2;}
+.badge.unlocked .badge-name{color:var(--gold-bright);}
+
+/* fab */
+.fab{
+  position:fixed; bottom:32px; right:38px; z-index:50;
+  width:auto; padding:16px 26px; border-radius:999px;
+  background:linear-gradient(135deg, var(--gold-bright), var(--gold) 60%, #b8893a);
+  color:#2a1c06; font-family:var(--font-head); font-weight:700; letter-spacing:0.04em;
+  box-shadow:0 8px 30px rgba(232,190,92,0.45), 0 0 0 1px rgba(255,255,255,0.15) inset;
+  display:flex; align-items:center; gap:10px; transition:transform 0.25s;
+}
+.fab:hover{transform:translateY(-3px) scale(1.02);}
+.fab svg{width:18px; height:18px;}
+
+/* ============ TOASTS ============ */
+#toast-stack{position:fixed; top:24px; right:24px; z-index:400; display:flex; flex-direction:column; gap:10px; max-width:340px;}
+.toast{
+  background:linear-gradient(135deg, var(--indigo), var(--midnight-2));
+  border:1px solid rgba(232,190,92,0.35); border-radius:var(--radius-m); padding:14px 18px;
+  display:flex; gap:12px; align-items:flex-start; box-shadow:0 12px 30px rgba(0,0,0,0.5), var(--shadow-glow-gold);
+  animation:toastIn 0.35s cubic-bezier(.2,.9,.3,1.3);
+}
+@keyframes toastIn{from{opacity:0; transform:translateX(40px);} to{opacity:1; transform:translateX(0);}}
+.toast.leaving{animation:toastOut 0.3s forwards;}
+@keyframes toastOut{to{opacity:0; transform:translateX(40px);}}
+.toast-icon{width:30px; height:30px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold));}
+.toast-icon svg{width:16px; height:16px;}
+.toast-title{font-family:var(--font-head); font-size:0.82rem; color:var(--gold-bright);}
+.toast-body{font-size:0.76rem; color:var(--text-muted); margin-top:2px;}
+
+/* ============ ACHIEVEMENT UNLOCK OVERLAY ============ */
+.unlock-overlay{
+  position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at center, rgba(79,42,134,0.45), rgba(4,5,16,0.88));
+  animation:fadeIn 0.3s ease;
+}
+.unlock-card{
+  text-align:center; position:relative;
+  animation:unlockPop 0.5s cubic-bezier(.2,.9,.3,1.4);
+}
+@keyframes unlockPop{from{opacity:0; transform:scale(0.6) rotate(-4deg);} to{opacity:1; transform:scale(1) rotate(0);}}
+.unlock-seal{
+  width:140px; height:140px; border-radius:50%; margin:0 auto 22px;
+  background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 55%, #8a651f);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 6px rgba(232,190,92,0.15), 0 0 80px rgba(232,190,92,0.6);
+  animation:sealPulse 1.8s ease-in-out infinite;
+}
+@keyframes sealPulse{0%,100%{box-shadow:0 0 0 6px rgba(232,190,92,0.15), 0 0 60px rgba(232,190,92,0.5);} 50%{box-shadow:0 0 0 10px rgba(232,190,92,0.25), 0 0 100px rgba(232,190,92,0.75);}}
+.unlock-seal svg{width:60px; height:60px;}
+.unlock-eyebrow{font-family:var(--font-mono); letter-spacing:0.3em; font-size:0.72rem; color:var(--cyan-bright); margin-bottom:10px; text-transform:uppercase;}
+.unlock-card h2{font-family:var(--font-display); font-size:2.2rem; color:var(--gold-bright); margin-bottom:10px;}
+.unlock-card p{color:var(--text-muted); max-width:340px; margin:0 auto;}
+
+/* ============ CREATE MEMORY MODAL ============ */
+.type-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:8px;}
+.type-opt{
+  display:flex; flex-direction:column; align-items:center; gap:8px; padding:16px 6px; border-radius:var(--radius-m);
+  border:1.5px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.03); transition:all 0.2s;
+}
+.type-opt svg{width:24px; height:24px;}
+.type-opt span{font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.04em; color:var(--text-muted); text-align:center;}
+.type-opt.selected{border-color:var(--cyan-bright); background:rgba(94,234,212,0.1); box-shadow:0 0 14px rgba(94,234,212,0.25);}
+.type-opt:hover{border-color:var(--cyan);}
+
+.mood-grid{display:flex; gap:8px; flex-wrap:wrap;}
+.mood-opt{
+  padding:9px 16px; border-radius:999px; border:1.5px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.03);
+  font-family:var(--font-mono); font-size:0.74rem; color:var(--text-muted); transition:all 0.2s;
+}
+.mood-opt.selected{border-color:var(--gold); background:rgba(232,190,92,0.15); color:var(--gold-bright);}
+
+.record-box{
+  border:1.5px dashed rgba(255,255,255,0.18); border-radius:var(--radius-m); padding:24px; text-align:center;
+  background:rgba(255,255,255,0.02);
+}
+.record-timer{font-family:var(--font-mono); font-size:1.6rem; color:var(--cyan-bright); margin:14px 0;}
+.record-controls{display:flex; gap:10px; justify-content:center; margin-top:14px; flex-wrap:wrap;}
+.waveform{display:flex; align-items:center; justify-content:center; gap:3px; height:48px; margin:14px 0;}
+.waveform span{
+  width:4px; border-radius:3px; background:linear-gradient(180deg, var(--cyan-bright), var(--purple-glow));
+  animation:wave 1s ease-in-out infinite; opacity:0.85;
+}
+@keyframes wave{0%,100%{height:8px;} 50%{height:36px;}}
+.record-dot{width:10px; height:10px; border-radius:50%; background:var(--danger); display:inline-block; animation:recPulse 1s infinite;}
+@keyframes recPulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
+video.preview-video{width:100%; max-width:360px; border-radius:var(--radius-m); margin-top:10px; background:#000;}
+
+.step-progress{display:flex; gap:6px; margin-bottom:24px;}
+.step-progress span{flex:1; height:4px; border-radius:999px; background:rgba(255,255,255,0.1);}
+.step-progress span.done{background:var(--gold);}
+.step-progress span.current{background:var(--cyan-bright);}
+
+/* ============ MEMORY GRAPH ============ */
+.graph-toolbar{display:flex; gap:12px; align-items:center; margin-bottom:18px; flex-wrap:wrap;}
+.graph-toolbar select, .graph-toolbar input{padding:9px 12px; border-radius:var(--radius-s); font-size:0.82rem;}
+.graph-wrap{
+  position:relative; overflow:hidden; border-radius:var(--radius-l); border:1px solid rgba(255,255,255,0.08);
+  background:radial-gradient(ellipse at 50% 0%, rgba(139,92,246,0.1), transparent 60%);
+  height:420px; cursor:grab;
+}
+.graph-wrap.dragging{cursor:grabbing;}
+.graph-svg-host{position:absolute; inset:0;}
+.graph-zoom-controls{position:absolute; bottom:16px; right:16px; display:flex; flex-direction:column; gap:8px; z-index:5;}
+.graph-zoom-controls button{
+  width:34px; height:34px; border-radius:50%; background:rgba(8,11,37,0.85); border:1px solid rgba(255,255,255,0.15);
+  display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:var(--text-light);
+}
+
+.node-detail{
+  position:fixed; top:0; right:0; height:100vh; width:360px; max-width:90vw;
+  background:linear-gradient(165deg, var(--indigo), var(--midnight-2));
+  border-left:1px solid rgba(232,190,92,0.25); padding:30px 26px; z-index:250; overflow-y:auto;
+  box-shadow:-20px 0 50px rgba(0,0,0,0.5); animation:slideIn 0.3s ease;
+}
+@keyframes slideIn{from{transform:translateX(100%);} to{transform:translateX(0);}}
+
+/* ============ QUESTS ============ */
+.quest-card{
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:var(--radius-l);
+  padding:26px; margin-bottom:26px;
+}
+.quest-card-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; flex-wrap:wrap; gap:10px;}
+.quest-card-head h3{font-family:var(--font-head); font-size:1.1rem; color:var(--gold-bright);}
+.quest-progress-label{font-family:var(--font-mono); font-size:0.72rem; color:var(--cyan-bright);}
+.quest-path{padding:20px 6px 4px; overflow-x:auto;}
+.quest-steps{display:flex; align-items:flex-start; min-width:560px; position:relative;}
+.quest-step{flex:1; display:flex; flex-direction:column; align-items:center; position:relative; text-align:center; padding:0 4px;}
+.quest-line{position:absolute; top:21px; left:50%; width:100%; height:3px; background:rgba(255,255,255,0.1); z-index:0;}
+.quest-step:last-child .quest-line{display:none;}
+.quest-line.done{background:linear-gradient(90deg, var(--gold), var(--cyan));}
+.quest-node{
+  width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,0.06); border:2px solid rgba(255,255,255,0.15); z-index:1;
+  font-family:var(--font-mono); font-weight:700; font-size:0.95rem; color:var(--text-muted); transition:all 0.25s;
+}
+.quest-node.done{
+  background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold)); border-color:var(--gold-bright);
+  color:#2a1c06; box-shadow:0 0 18px rgba(232,190,92,0.55);
+}
+.quest-node.next{border-color:var(--cyan-bright); color:var(--cyan-bright); box-shadow:0 0 14px rgba(94,234,212,0.4); cursor:pointer;}
+.quest-node.next:hover{transform:scale(1.1);}
+.quest-step-label{font-family:var(--font-head); font-size:0.7rem; color:var(--text-muted); margin-top:10px; max-width:90px;}
+.quest-step.done .quest-step-label{color:var(--gold-bright);}
+
+/* ============ MISC ============ */
+.form-actions-end{display:flex; justify-content:flex-end; gap:10px; margin-top:22px;}
+.divider{height:1px; background:rgba(255,255,255,0.08); margin:22px 0;}
+.share-link-box{
+  display:flex; gap:10px; align-items:center; background:rgba(0,0,0,0.2); border-radius:var(--radius-s);
+  padding:10px 14px; font-family:var(--font-mono); font-size:0.78rem; color:var(--cyan-bright); margin-top:10px;
+}
+.status-pill{font-family:var(--font-mono); font-size:0.62rem; padding:3px 10px; border-radius:999px; letter-spacing:0.05em;}
+.status-pending{background:rgba(255,255,255,0.08); color:var(--text-muted);}
+.status-scheduled{background:rgba(94,234,212,0.14); color:var(--cyan-bright);}
+.status-delivered{background:rgba(232,190,92,0.16); color:var(--gold-bright);}
+
+.mem-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px;}
+.mem-card{
+  background:linear-gradient(165deg, var(--parchment), var(--parchment-dark)); color:var(--ink);
+  border-radius:var(--radius-m); padding:22px; position:relative; box-shadow:0 16px 34px rgba(0,0,0,0.4);
+}
+.mem-card-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;}
+.mem-card h4{font-family:var(--font-head); font-size:1rem; margin-bottom:6px;}
+.mem-card p{font-size:0.84rem; color:var(--ink-soft); line-height:1.5; margin-bottom:10px;}
+.mem-card-foot{display:flex; justify-content:space-between; align-items:center; font-family:var(--font-mono); font-size:0.68rem; color:var(--ink-soft); margin-top:12px;}
+.mem-card .wax{
+  position:absolute; top:-10px; right:16px; width:34px; height:34px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 60%, #8a651f);
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+}
+
+@media (max-width:880px){
+  .app-shell{grid-template-columns:1fr;}
+  .sidebar{position:relative; height:auto; flex-direction:row; flex-wrap:wrap; align-items:center; gap:10px;}
+  .sidebar .brand{margin-bottom:0;}
+  .side-user{border:none; padding:0; margin:0;}
+  .side-nav{flex-direction:row; flex-wrap:wrap;}
+  .side-foot{border:none; margin:0; padding:0;}
+  .main{padding:24px 18px 100px;}
+  .dash-grid{grid-template-columns:1fr;}
+  .type-grid{grid-template-columns:repeat(3,1fr);}
+  .field-row{grid-template-columns:1fr;}
+  .fab span{display:none;}
+}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<div id="app"></div>
+<div id="toast-stack"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+/* ---------- SUPABASE CLIENT (for real auth) ---------- */
+const SUPABASE_URL = "https://bxrrdxnsdyhxfhypiiww.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4cnJkeG5zZHloeGZoeXBpaXd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5ODc1NzcsImV4cCI6MjA5NzU2MzU3N30.NdtreSH9tMtKwtT3pcZCN7l-5QTmRJKzqacKJpqMhAc";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
+<script>
+/* ======================================================================
+   LUMINOUS — prototype application
+   In-memory state for the demo UI, PLUS a real save to n8n/Supabase.
+   ====================================================================== */
+
+/* ---------- BACKEND CONNECTION ---------- */
+const SAVE_CAPSULE_WEBHOOK_URL = "https://priyankak5710.app.n8n.cloud/webhook/save-capsule";
+
+// Sends one capsule to the n8n webhook, which inserts it into Supabase.
+// Runs in addition to the existing local demo behavior — never blocks it.
+async function sendCapsuleToServer(memory){
+  try{
+    // Combine the date and time fields into one ISO timestamp for deliveryAt.
+    let deliveryAt = null;
+    if(memory.deliveryDate){
+      const time = memory.deliveryTime || '09:00';
+      deliveryAt = new Date(`${memory.deliveryDate}T${time}:00`).toISOString();
+    }
+    const payload = {
+      userEmail: state.user?.email || '',
+      type: memory.type,
+      title: memory.title,
+      description: memory.description,
+      mood: memory.mood,
+      tags: Array.isArray(memory.tags) ? memory.tags.join(', ') : (memory.tags || ''),
+      recipientEmail: memory.recipientEmail,
+      deliveryAt: deliveryAt
+    };
+    const res = await fetch(SAVE_CAPSULE_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if(!res.ok){
+      console.error('Capsule save failed:', res.status, await res.text());
+      showToast('sparkle','Saved locally only','Could not reach the server — your scroll is saved in this tab, but check your connection.');
+    } else {
+      console.log('Capsule saved to server successfully.');
+    }
+  }catch(err){
+    console.error('Capsule save error:', err);
+    showToast('sparkle','Saved locally only','Could not reach the server — your scroll is saved in this tab, but check your connection.');
+  }
+}
+
+/* ---------- ICONS ---------- */
+const ICONS = {
+  letter: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>`,
+  diary: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V4z"/><path d="M5 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2"/><path d="M9 9h6M9 13h4"/></svg>`,
+  note: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3v5a1 1 0 0 0 1 1h5"/><path d="M6 3h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M9 13h6M9 17h4"/></svg>`,
+  audio: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>`,
+  video: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3"/></svg>`,
+  goal: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>`,
+  graph: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l5-6 4 4 8-9"/><circle cx="3" cy="17" r="1.5" fill="currentColor"/><circle cx="8" cy="11" r="1.5" fill="currentColor"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/><circle cx="20" cy="6" r="1.5" fill="currentColor"/></svg>`,
+  trophy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4z"/><path d="M7 5H4a3 3 0 0 0 3 5M17 5h3a3 3 0 0 1-3 5"/></svg>`,
+  dash: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>`,
+  star: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 7.2H22l-6 4.5 2.3 7.3L12 16.8 5.7 21l2.3-7.3-6-4.5h7.4z"/></svg>`,
+  portal: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="12" rx="9" ry="6"/><ellipse cx="12" cy="12" rx="5" ry="3"/></svg>`,
+  plus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>`,
+  close: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+  dreamer: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 0 0 9 9 9 9 0 0 0 9-9 9 9 0 0 1-9 5 9 9 0 0 1-9-5z"/></svg>`,
+  explorer: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5L10 14l-1.5 4.5L13 14l1.5-4.5z"/></svg>`,
+  guardian: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3z"/></svg>`,
+  wizard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l2 5 5 .8-3.6 3.5.9 5-4.3-2.3-4.3 2.3.9-5L5 7.8 10 7z"/></svg>`,
+  timetraveler: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
+  sparkle: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg>`,
+  mic: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>`,
+  cam: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3"/></svg>`,
+  pause: `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>`,
+  play: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>`,
+  stop: `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`,
+};
+function icon(name){ return ICONS[name] || ''; }
+
+/* ---------- STATE ---------- */
+const state = {
+  user: null,
+  xp: 0,
+  memories: [],
+  events: [],
+  goals: [],
+  achievements: { dreamSeeker:false, memoryKeeper:false, futureExplorer:false, timeTraveler:false, chronicleMaster:false, luminousLegend:false },
+  view: 'landing',
+  graphView: { scale: 1, offsetX: 0 },
+};
+
+const ACHIEVEMENT_META = {
+  dreamSeeker:   { name:'Dream Seeker',    desc:'Create your first memory scroll.' },
+  memoryKeeper:  { name:'Memory Keeper',   desc:'Preserve five memories in the archive.' },
+  futureExplorer:{ name:'Future Explorer', desc:'Schedule a delivery to the future.' },
+  timeTraveler:  { name:'Time Traveler',   desc:'Send a message more than 30 days ahead.' },
+  chronicleMaster:{ name:'Chronicle Master', desc:'Complete every level of a quest.' },
+  luminousLegend:{ name:'Luminous Legend', desc:'Reach Level 5 on your journey.' },
+};
+
+const MOODS = ['Hopeful','Joyful','Nostalgic','Anxious','Sad','Excited','Peaceful','Determined'];
+const MEMORY_TYPES = [
+  { id:'letter', label:'Letter Scroll', xp:50 },
+  { id:'diary',  label:'Diary Scroll',  xp:30 },
+  { id:'note',   label:'Note Scroll',   xp:20 },
+  { id:'audio',  label:'Audio Scroll',  xp:40 },
+  { id:'video',  label:'Video Scroll',  xp:50 },
+];
+
+function uid(){ return Math.random().toString(36).slice(2,10); }
+function fmtDate(d){
+  if(!d) return '—';
+  const dt = new Date(d+'T00:00:00');
+  if(isNaN(dt)) return d;
+  return dt.toLocaleDateString(undefined,{month:'short', day:'numeric', year:'numeric'});
+}
+function daysFromNow(dateStr){
+  if(!dateStr) return null;
+  const dt = new Date(dateStr+'T00:00:00');
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Math.round((dt-now)/86400000);
+}
+
+/* ---------- XP / LEVEL ---------- */
+const XP_PER_LEVEL = 250;
+function levelInfo(){
+  const level = Math.floor(state.xp / XP_PER_LEVEL) + 1;
+  const into = state.xp % XP_PER_LEVEL;
+  const pct = Math.round((into / XP_PER_LEVEL) * 100);
+  return { level, into, pct, needed: XP_PER_LEVEL };
+}
+function addXP(amount, reason){
+  state.xp += amount;
+  showToast('sparkle', `+${amount} XP`, reason);
+  checkAchievements();
+  renderApp();
+}
+
+/* ---------- ACHIEVEMENTS ---------- */
+function checkAchievements(){
+  const a = state.achievements;
+  const toUnlock = [];
+  if(!a.dreamSeeker && state.memories.length >= 1) toUnlock.push('dreamSeeker');
+  if(!a.memoryKeeper && state.memories.length >= 5) toUnlock.push('memoryKeeper');
+  if(!a.futureExplorer && state.memories.some(m=>m.deliveryDate)) toUnlock.push('futureExplorer');
+  if(!a.timeTraveler && state.memories.some(m=> m.deliveryDate && daysFromNow(m.deliveryDate) > 30)) toUnlock.push('timeTraveler');
+  if(!a.chronicleMaster && state.goals.some(g=> g.levels.every(l=>l.done))) toUnlock.push('chronicleMaster');
+  if(!a.luminousLegend && levelInfo().level >= 5) toUnlock.push('luminousLegend');
+  toUnlock.forEach(key=>{
+    state.achievements[key] = true;
+    queueUnlock(key);
+  });
+}
+let unlockQueue = [];
+function queueUnlock(key){
+  unlockQueue.push(key);
+  if(unlockQueue.length === 1) showNextUnlock();
+}
+function showNextUnlock(){
+  if(!unlockQueue.length) return;
+  const key = unlockQueue[0];
+  const meta = ACHIEVEMENT_META[key];
+  const overlay = document.createElement('div');
+  overlay.className = 'unlock-overlay';
+  overlay.innerHTML = `
+    <div class="unlock-card">
+      <div class="unlock-seal">${icon('trophy')}</div>
+      <div class="unlock-eyebrow">Achievement Unlocked</div>
+      <h2>${meta.name}</h2>
+      <p>${meta.desc}</p>
+      <button class="btn btn-gold" style="margin-top:26px;" id="unlock-dismiss">Continue the Journey</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#unlock-dismiss').onclick = ()=>{
+    overlay.remove();
+    unlockQueue.shift();
+    renderApp();
+    setTimeout(showNextUnlock, 200);
+  };
+}
+
+/* ---------- TOASTS ---------- */
+function showToast(iconName, title, body, duration=4200){
+  const stack = document.getElementById('toast-stack');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `<div class="toast-icon">${icon(iconName)}</div><div><div class="toast-title">${title}</div><div class="toast-body">${body||''}</div></div>`;
+  stack.appendChild(el);
+  setTimeout(()=>{
+    el.classList.add('leaving');
+    setTimeout(()=>el.remove(), 320);
+  }, duration);
+}
+
+/* ---------- STARFIELD CANVAS ---------- */
+(function initStarfield(){
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let w,h,stars=[],particles=[];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = document.documentElement.scrollHeight;
+    const count = Math.min(180, Math.floor((w*h)/9000));
+    stars = Array.from({length:count}, ()=>({
+      x:Math.random()*w, y:Math.random()*h, r:Math.random()*1.4+0.3,
+      tw:Math.random()*Math.PI*2, speed:Math.random()*0.02+0.005
+    }));
+    particles = Array.from({length:26}, ()=>({
+      x:Math.random()*w, y:Math.random()*h, r:Math.random()*2+1,
+      vy:-(Math.random()*0.25+0.08), vx:(Math.random()-0.5)*0.12, alpha:Math.random()*0.5+0.2
+    }));
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    stars.forEach(s=>{
+      s.tw += s.speed;
+      const a = 0.35 + Math.sin(s.tw)*0.35;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(232,222,255,${Math.max(0,a)})`;
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fill();
+    });
+    particles.forEach(p=>{
+      p.x += p.vx; p.y += p.vy;
+      if(p.y < -10){ p.y = h+10; p.x = Math.random()*w; }
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(94,234,212,${p.alpha*0.5})`;
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+    });
+    if(!reduceMotion) requestAnimationFrame(draw);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  draw();
+  // re-measure scroll height periodically since content height changes with views
+  setInterval(()=>{ const newH = document.documentElement.scrollHeight; if(Math.abs(newH-h) > 80) resize(); }, 1500);
+})();
+
+/* ======================================================================
+   RENDER: ROOT
+   ====================================================================== */
+function renderApp(){
+  const root = document.getElementById('app');
+  if(!state.user){
+    root.innerHTML = renderLanding();
+    bindLandingEvents();
+  } else {
+    root.innerHTML = renderShell();
+    bindShellEvents();
+  }
+}
+
+/* ======================================================================
+   LANDING PAGE
+   ====================================================================== */
+function renderLanding(){
+  return `
+  <nav class="landing-nav">
+    <div class="brand"><span class="brand-mark">L</span> Luminous</div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#quests">Quests</a></li>
+      <li><a href="#graph">Memory Graph</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <div class="nav-auth">
+      <button class="btn btn-ghost" id="nav-signin">Sign In</button>
+      <button class="btn btn-gold" id="nav-signup">Sign Up</button>
+    </div>
+  </nav>
+
+  <header class="hero" id="home">
+    <div class="hero-eyebrow">✦ ⟡ A Time Capsule Forged In Starlight ⟡ ✦</div>
+    <h1>LUMINOUS</h1>
+    <div class="hero-tagline">"A Message from Today, Delivered to Tomorrow"</div>
+    <p class="hero-sub">Preserve your memories, dreams, goals, and messages inside magical time capsules that will return to you in the future.</p>
+    <div class="hero-cta">
+      <button class="btn btn-gold" id="hero-signup">Begin Your Quest</button>
+      <button class="btn btn-ghost" id="hero-signin">I Already Have a Scroll</button>
+    </div>
+  </header>
+
+  <section class="section" id="features">
+    <div class="section-head">
+      <div class="section-eyebrow">The Five Scrolls</div>
+      <h2>Every memory becomes a magical scroll</h2>
+      <p>Choose the form your message takes, and Luminous will carry it across time to the moment you've chosen.</p>
+    </div>
+    <div class="feature-grid">
+      ${[
+        ['letter','Letter Scroll','Write a future letter to yourself or someone you love, sealed until the date you choose.'],
+        ['diary','Diary Scroll','Capture how today feels — moods, thoughts, and the small details memory tends to lose.'],
+        ['note','Note Scroll','Quick thoughts, reminders, and fragments worth keeping for later.'],
+        ['audio','Audio Scroll','Record your voice and let it carry tone and feeling that words alone cannot.'],
+        ['video','Video Scroll','Capture a living memory in motion, sealed inside a portal to the future.'],
+      ].map(([id,title,desc])=>`
+        <div class="scroll-card">
+          <div class="scroll-icon">${icon(id)}</div>
+          <h3>${title}</h3>
+          <p>${desc}</p>
+        </div>
+      `).join('')}
+    </div>
+  </section>
+
+  <section class="section" id="quests">
+    <div class="section-head">
+      <div class="section-eyebrow">Goal Quests</div>
+      <h2>Every goal becomes a quest</h2>
+      <p>Break ambitions into levels on a winding path. Complete one to unlock the next, and watch your reflection in the Memory Graph grow.</p>
+    </div>
+    <div class="feature-grid" style="max-width:760px;">
+      <div class="scroll-card">
+        <div class="scroll-icon">${icon('goal')}</div>
+        <h3>Leveled Progress</h3>
+        <p>Define five levels for any ambition — from "Learn Python" to "Get the Job" — and step through them one at a time.</p>
+      </div>
+      <div class="scroll-card">
+        <div class="scroll-icon">${icon('trophy')}</div>
+        <h3>Earned Achievements</h3>
+        <p>Finishing a quest, sending your first letter, or reaching Level 5 all unlock badges sealed in gold.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="graph">
+    <div class="section-head">
+      <div class="section-eyebrow">The Memory Graph</div>
+      <h2>An interactive river of time</h2>
+      <p>Every memory and milestone connects chronologically — graduation, first job, a promise to your future self — drawn as a living timeline you can explore.</p>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="section-head">
+      <div class="section-eyebrow">About Luminous</div>
+      <h2>A magical journey through who you've been</h2>
+      <p>Luminous treats memory-keeping as a quest worth taking seriously: emotional, gamified, and built to make tomorrow feel a little closer to today.</p>
+      <div class="hero-cta" style="margin-top:30px;">
+        <button class="btn btn-gold" id="about-signup">Create Your First Scroll</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="landing-footer">
+    <div class="glyphs">✦ ⟡ ❖ ⟡ ✦</div>
+    Luminous — a time capsule for the people you're becoming.
+  </footer>
+  `;
+}
+
+function bindLandingEvents(){
+  document.getElementById('nav-signin')?.addEventListener('click', ()=>openAuthModal('signin'));
+  document.getElementById('nav-signup')?.addEventListener('click', ()=>openAuthModal('signup'));
+  document.getElementById('hero-signin')?.addEventListener('click', ()=>openAuthModal('signin'));
+  document.getElementById('hero-signup')?.addEventListener('click', ()=>openAuthModal('signup'));
+  document.getElementById('about-signup')?.addEventListener('click', ()=>openAuthModal('signup'));
+}
+
+/* ======================================================================
+   AUTH MODAL
+   ====================================================================== */
+const AVATARS = [
+  {id:'dreamer', name:'Dreamer'}, {id:'explorer', name:'Explorer'}, {id:'guardian', name:'Guardian'},
+  {id:'wizard', name:'Wizard'}, {id:'timetraveler', name:'Time Traveler'}, {id:'sparkle', name:'AI-Generated'},
+];
+
+function openAuthModal(mode){
+  let selectedAvatar = 'dreamer';
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.innerHTML = mode === 'signup' ? `
+    <div class="modal">
+      <button class="modal-close" id="auth-close">${icon('close')}</button>
+      <h2>Begin Your Quest</h2>
+      <div class="modal-sub">Create your Luminous account to start sending messages through time.</div>
+      <div class="field"><label>Name</label><input type="text" id="su-name" placeholder="Your name"></div>
+      <div class="field"><label>Email</label><input type="email" id="su-email" placeholder="you@example.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="su-password" placeholder="••••••••" minlength="6"></div>
+      <div class="hint">Must be at least 6 characters.</div>
+      <div id="auth-error" style="color:#FF8A8A; font-size:13px; min-height:18px; margin-top:4px;"></div>
+      <div class="field">
+        <label>Choose Your Avatar</label>
+        <div class="avatar-grid" id="avatar-grid">
+          ${AVATARS.map(a=>`
+            <button type="button" class="avatar-opt ${a.id==='dreamer'?'selected':''}" data-avatar="${a.id}">
+              ${icon(a.id)}<span>${a.name}</span>
+            </button>`).join('')}
+        </div>
+        <div class="hint">Or let Luminous generate one for you — pick "AI-Generated."</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-gold btn-block" id="su-submit">Create Account</button>
+      </div>
+      <div class="modal-switch">Already on a quest? <button id="switch-signin">Sign in instead</button></div>
+    </div>
+  ` : `
+    <div class="modal">
+      <button class="modal-close" id="auth-close">${icon('close')}</button>
+      <h2>Welcome Back, Traveler</h2>
+      <div class="modal-sub">Sign in to continue your journey through Luminous.</div>
+      <div class="field"><label>Email</label><input type="email" id="si-email" placeholder="you@example.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="si-password" placeholder="••••••••"></div>
+      <div id="auth-error" style="color:#FF8A8A; font-size:13px; min-height:18px; margin-top:4px;"></div>
+      <div class="modal-actions">
+        <button class="btn btn-gold btn-block" id="si-submit">Sign In</button>
+      </div>
+      <div class="modal-switch">New here? <button id="switch-signup">Create an account</button></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) overlay.remove(); });
+  overlay.querySelector('#auth-close').onclick = ()=>overlay.remove();
+
+  if(mode === 'signup'){
+    overlay.querySelectorAll('.avatar-opt').forEach(btn=>{
+      btn.onclick = ()=>{
+        overlay.querySelectorAll('.avatar-opt').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedAvatar = btn.dataset.avatar;
+      };
+    });
+    overlay.querySelector('#switch-signin').onclick = ()=>{ overlay.remove(); openAuthModal('signin'); };
+    overlay.querySelector('#su-submit').onclick = async ()=>{
+      const errorBox = overlay.querySelector('#auth-error');
+      errorBox.textContent = '';
+      const name = overlay.querySelector('#su-name').value.trim();
+      const email = overlay.querySelector('#su-email').value.trim();
+      const password = overlay.querySelector('#su-password').value;
+
+      if(!name){ errorBox.textContent = 'Please enter your name.'; return; }
+      if(!email || !email.includes('@')){ errorBox.textContent = 'Please enter a valid email address.'; return; }
+      if(!password || password.length < 6){ errorBox.textContent = 'Password must be at least 6 characters.'; return; }
+
+      const submitBtn = overlay.querySelector('#su-submit');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating account…';
+
+      try{
+        const { data, error } = await supabaseClient.auth.signUp({
+          email, password,
+          options: { data: { name, avatar: selectedAvatar } }
+        });
+        if(error){
+          errorBox.textContent = error.message || 'Something went wrong. Please try again.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Create Account';
+          return;
+        }
+        // Email confirmation is required, so there's no session yet — show a "check your email" message instead of logging in.
+        overlay.querySelector('.modal').innerHTML = `
+          <button class="modal-close" id="auth-close-2">${icon('close')}</button>
+          <h2>Check Your Email</h2>
+          <div class="modal-sub">We've sent a confirmation link to <strong>${email}</strong>. Click it to activate your account, then come back and sign in.</div>
+        `;
+        overlay.querySelector('#auth-close-2').onclick = ()=>overlay.remove();
+      }catch(err){
+        console.error('Signup error:', err);
+        errorBox.textContent = 'Could not reach the server. Check your connection and try again.';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Account';
+      }
+    };
+  } else {
+    overlay.querySelector('#switch-signup').onclick = ()=>{ overlay.remove(); openAuthModal('signup'); };
+    overlay.querySelector('#si-submit').onclick = async ()=>{
+      const errorBox = overlay.querySelector('#auth-error');
+      errorBox.textContent = '';
+      const email = overlay.querySelector('#si-email').value.trim();
+      const password = overlay.querySelector('#si-password').value;
+
+      if(!email || !email.includes('@')){ errorBox.textContent = 'Please enter a valid email address.'; return; }
+      if(!password){ errorBox.textContent = 'Please enter your password.'; return; }
+
+      const submitBtn = overlay.querySelector('#si-submit');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing in…';
+
+      try{
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if(error){
+          errorBox.textContent = error.message.includes('Invalid login credentials')
+            ? 'Incorrect email or password.'
+            : (error.message.includes('Email not confirmed') ? 'Please confirm your email first — check your inbox for the link we sent.' : (error.message || 'Something went wrong. Please try again.'));
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+          return;
+        }
+        const meta = data.user.user_metadata || {};
+        state.user = { name: meta.name || email.split('@')[0] || 'Traveler', email: data.user.email, avatar: meta.avatar || 'dreamer' };
+        overlay.remove();
+        seedStarterContent();
+        state.view = 'dashboard';
+        renderApp();
+        showToast('star', 'Welcome back', 'Picking up right where you left off.');
+      }catch(err){
+        console.error('Sign-in error:', err);
+        errorBox.textContent = 'Could not reach the server. Check your connection and try again.';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+      }
+    };
+  }
+}
+
+/* ---------- STARTER CONTENT (so the dashboard isn't empty on first login) ---------- */
+function seedStarterContent(){
+  if(state.memories.length || state.events.length || state.goals.length) return; // only seed once
+  const today = new Date();
+  const futureDate = new Date(today.getTime() + 1000*60*60*24*45);
+  const pastDate1 = new Date(today.getTime() - 1000*60*60*24*200);
+  const pastDate2 = new Date(today.getTime() - 1000*60*60*24*60);
+
+  state.memories.push({
+    id:uid(), type:'letter', title:'To Whoever I Am Next Spring', description:'A note about what I hope has changed, and what I hope has stayed the same.',
+    mood:'Hopeful', tags:['reflection','growth'], deliveryDate: futureDate.toISOString().slice(0,10), deliveryTime:'09:00',
+    recipientEmail: state.user.email, createdAt: today.toISOString(), status:'Scheduled', shareLink:`luminous.app/share/${uid()}`
+  });
+
+  state.events.push(
+    { id:uid(), title:'Started This Journey', description:'The day I decided to start keeping a record worth returning to.', date: today.toISOString().slice(0,10), time:'10:00', mood:'Excited', category:'Milestone' },
+    { id:uid(), title:'A Quiet Realization', description:'Figured something out about what I actually want.', date: pastDate2.toISOString().slice(0,10), time:'19:30', mood:'Peaceful', category:'Personal' },
+    { id:uid(), title:'Where It Started', description:'The first chapter of the story this timeline is telling.', date: pastDate1.toISOString().slice(0,10), time:'08:00', mood:'Determined', category:'Milestone' }
+  );
+
+  state.goals.push({
+    id:uid(), title:'Become a Data Scientist',
+    levels:[
+      {name:'Learn Python', done:true},
+      {name:'Build Projects', done:true},
+      {name:'Get an Internship', done:false},
+      {name:'Land the Job', done:false},
+      {name:'Achieve the Goal', done:false},
+    ]
+  });
+  state.xp = 60;
+}
+
+/* ======================================================================
+   APP SHELL (post sign-in)
+   ====================================================================== */
+const NAV_ITEMS = [
+  { id:'dashboard', label:'Dashboard', icon:'dash' },
+  { id:'memories', label:'Memories', icon:'note' },
+  { id:'graph', label:'Memory Graph', icon:'graph' },
+  { id:'quests', label:'Quests', icon:'goal' },
+  { id:'achievements', label:'Achievements', icon:'trophy' },
+];
+
+function renderShell(){
+  const li = levelInfo();
+  return `
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">L</span> Luminous</div>
+      <div class="side-user">
+        <div class="side-avatar">${icon(state.user.avatar)}</div>
+        <div>
+          <div class="side-user-name">${state.user.name}</div>
+          <div class="side-user-level">Level ${li.level} · ${state.xp} XP</div>
+        </div>
+      </div>
+      <nav class="side-nav">
+        ${NAV_ITEMS.map(n=>`
+          <button data-view="${n.id}" class="${state.view===n.id?'active':''}">${icon(n.icon)} ${n.label}</button>
+        `).join('')}
+      </nav>
+      <div class="side-foot">
+        <button class="btn btn-ghost btn-block btn-small" id="signout-btn">Sign Out</button>
+      </div>
+    </aside>
+    <main class="main">
+      ${renderMainView()}
+    </main>
+  </div>
+  <button class="fab" id="open-create"><span>${icon('plus')}</span> New Scroll</button>
+  `;
+}
+
+function renderMainView(){
+  switch(state.view){
+    case 'memories': return renderMemoriesView();
+    case 'graph': return renderGraphView();
+    case 'quests': return renderQuestsView();
+    case 'achievements': return renderAchievementsView();
+    default: return renderDashboardView();
+  }
+}
+
+function bindShellEvents(){
+  document.querySelectorAll('.side-nav [data-view]').forEach(btn=>{
+    btn.onclick = ()=>{ state.view = btn.dataset.view; renderApp(); window.scrollTo({top:0}); };
+  });
+  document.getElementById('signout-btn').onclick = async ()=>{
+    await supabaseClient.auth.signOut();
+    state.user = null; state.view = 'landing'; renderApp();
+  };
+  document.getElementById('open-create').onclick = openCreateModal;
+  bindViewSpecificEvents();
+}
+
+/* ======================================================================
+   DASHBOARD
+   ====================================================================== */
+function renderDashboardView(){
+  const li = levelInfo();
+  const recentMemories = [...state.memories].sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
+  const upcoming = state.memories.filter(m=>m.deliveryDate && m.status !== 'Delivered')
+    .sort((a,b)=> new Date(a.deliveryDate)-new Date(b.deliveryDate)).slice(0,4);
+  const activeGoal = state.goals.find(g=> !g.levels.every(l=>l.done));
+  const unlockedCount = Object.values(state.achievements).filter(Boolean).length;
+
+  return `
+  <div class="topbar-xp">
+    <div class="xp-ring" style="--pct:${li.pct}"><div class="xp-ring-label">${li.level}</div></div>
+    <div class="xp-bar-wrap">
+      <div class="xp-bar-top"><span>LEVEL ${li.level}</span><span>${li.into} / ${li.needed} XP</span></div>
+      <div class="xp-bar"><div class="xp-bar-fill" style="width:${li.pct}%"></div></div>
+    </div>
+  </div>
+  <div class="page-title">Welcome back, ${state.user.name.split(' ')[0]}</div>
+  <div class="page-sub">Your archive of memories, quests, and messages bound for the future.</div>
+
+  <div class="dash-grid">
+    <div>
+      <div class="panel">
+        <div class="panel-head"><h3>Recent Memories</h3><button class="link" data-view="memories">View all →</button></div>
+        ${recentMemories.length ? recentMemories.map(memRow).join('') : `<div class="empty-state">No memories yet. Create your first scroll to begin the archive.</div>`}
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Active Quest</h3><button class="link" data-view="quests">View all →</button></div>
+        ${activeGoal ? questMini(activeGoal) : `<div class="empty-state">No active quests. Start one from the Quests page.</div>`}
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <div class="panel-head"><h3>Upcoming Deliveries</h3></div>
+        ${upcoming.length ? upcoming.map(m=>`
+          <div class="mem-row">
+            <div class="mem-row-icon">${icon(m.type)}</div>
+            <div class="mem-row-body">
+              <div class="mem-row-title">${escapeHtml(m.title)}</div>
+              <div class="mem-row-meta">${fmtDate(m.deliveryDate)} · ${daysFromNow(m.deliveryDate)} days away</div>
+            </div>
+            <span class="status-pill status-${m.status.toLowerCase()}">${m.status}</span>
+          </div>
+        `).join('') : `<div class="empty-state">Nothing scheduled. A scroll with a delivery date will appear here.</div>`}
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Achievements</h3><span style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-faint);">${unlockedCount}/6</span></div>
+        <div class="badge-grid-mini">
+          ${Object.keys(ACHIEVEMENT_META).slice(0,6).map(badgeMini).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function memRow(m){
+  return `
+  <div class="mem-row" data-mem="${m.id}">
+    <div class="mem-row-icon">${icon(m.type)}</div>
+    <div class="mem-row-body">
+      <div class="mem-row-title">${escapeHtml(m.title)}</div>
+      <div class="mem-row-meta">${MEMORY_TYPES.find(t=>t.id===m.type)?.label} · ${fmtDate(m.createdAt.slice(0,10))}</div>
+    </div>
+    <span class="tag-pill">${m.mood}</span>
+  </div>`;
+}
+
+function badgeMini(key){
+  const unlocked = state.achievements[key];
+  const meta = ACHIEVEMENT_META[key];
+  return `
+  <div class="badge ${unlocked?'unlocked':''}" title="${meta.desc}">
+    <div class="badge-icon">${icon('trophy')}</div>
+    <div class="badge-name">${meta.name}</div>
+  </div>`;
+}
+
+function questMini(goal){
+  const doneCount = goal.levels.filter(l=>l.done).length;
+  return `
+  <div>
+    <div style="font-family:var(--font-head); font-size:0.95rem; color:var(--text-light); margin-bottom:4px;">${escapeHtml(goal.title)}</div>
+    <div style="font-family:var(--font-mono); font-size:0.7rem; color:var(--cyan-bright); margin-bottom:14px;">${doneCount} / ${goal.levels.length} levels complete</div>
+    ${questPathHtml(goal, true)}
+  </div>`;
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div'); d.textContent = str||''; return d.innerHTML;
+}
+
+/* ======================================================================
+   MEMORIES VIEW
+   ====================================================================== */
+function renderMemoriesView(){
+  return `
+  <div class="page-title">Your Memory Archive</div>
+  <div class="page-sub">Every letter, note, diary entry, and recording you've sealed for later.</div>
+  ${state.memories.length ? `<div class="mem-grid">${[...state.memories].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(memCard).join('')}</div>`
+    : `<div class="empty-state">The archive is empty. Tap "New Scroll" to create your first memory.</div>`}
+  `;
+}
+
+function memCard(m){
+  return `
+  <div class="mem-card" data-mem="${m.id}">
+    <div class="wax"></div>
+    <div class="mem-card-top">
+      <span class="tag-pill purple">${MEMORY_TYPES.find(t=>t.id===m.type)?.label}</span>
+      <span class="status-pill status-${(m.status||'Pending').toLowerCase()}">${m.status||'Pending'}</span>
+    </div>
+    <h4>${escapeHtml(m.title)}</h4>
+    <p>${escapeHtml((m.description||'').slice(0,110))}${(m.description||'').length>110?'…':''}</p>
+    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+      <span class="tag-pill gold">${m.mood}</span>
+      ${(m.tags||[]).slice(0,2).map(t=>`<span class="tag-pill">#${escapeHtml(t)}</span>`).join('')}
+    </div>
+    <div class="mem-card-foot">
+      <span>${m.deliveryDate ? 'Arrives ' + fmtDate(m.deliveryDate) : 'No delivery set'}</span>
+      <span>${fmtDate(m.createdAt.slice(0,10))}</span>
+    </div>
+  </div>`;
+}
+
+/* ======================================================================
+   CREATE MEMORY MODAL (multi-step)
+   ====================================================================== */
+let createState = {};
+function resetCreateState(){
+  createState = {
+    step: 1, type: null, title:'', description:'', mood: MOODS[0], tags:'',
+    deliveryDate:'', deliveryTime:'09:00', recipientEmail: state.user?.email || '',
+    recording: { status:'idle', seconds:0, timer:null, mediaRecorder:null, chunks:[], blobUrl:null, stream:null, simulated:false }
+  };
+}
+
+function openCreateModal(){
+  resetCreateState();
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.id = 'create-overlay';
+  document.body.appendChild(overlay);
+  renderCreateModal(overlay);
+}
+
+function totalSteps(){
+  return (createState.type === 'audio' || createState.type === 'video') ? 3 : 2;
+}
+
+function renderCreateModal(overlay){
+  const steps = totalSteps();
+  overlay.innerHTML = `
+    <div class="modal modal-wide">
+      <button class="modal-close" id="create-close">${icon('close')}</button>
+      <h2>Create a New Scroll</h2>
+      <div class="modal-sub">Step ${createState.step} of ${steps}</div>
+      <div class="step-progress">
+        ${Array.from({length:steps}).map((_,i)=>`<span class="${i+1 < createState.step ? 'done' : i+1===createState.step ? 'current' : ''}"></span>`).join('')}
+      </div>
+      <div id="create-step-body">${renderCreateStep()}</div>
+    </div>
+  `;
+  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeCreateModal(overlay); });
+  overlay.querySelector('#create-close').onclick = ()=>closeCreateModal(overlay);
+  bindCreateStepEvents(overlay);
+}
+
+function closeCreateModal(overlay){
+  stopMediaTracks();
+  overlay.remove();
+}
+
+function renderCreateStep(){
+  if(createState.step === 1) return createStepType();
+  if(createState.step === 2) return createStepDetails();
+  if(createState.step === 3) return createStepRecord();
+  return '';
+}
+
+function createStepType(){
+  return `
+  <div class="field">
+    <label>Choose a Scroll Type</label>
+    <div class="type-grid">
+      ${MEMORY_TYPES.map(t=>`
+        <button type="button" class="type-opt ${createState.type===t.id?'selected':''}" data-type="${t.id}">
+          ${icon(t.id)}<span>${t.label}</span>
+        </button>`).join('')}
+    </div>
+  </div>
+  <div class="form-actions-end">
+    <button class="btn btn-gold" id="step1-next" ${!createState.type?'disabled':''}>Continue</button>
+  </div>`;
+}
+
+function createStepDetails(){
+  return `
+  <div class="field"><label>Title</label><input type="text" id="cf-title" placeholder="Give your scroll a title" value="${escapeAttr(createState.title)}"></div>
+  <div class="field"><label>Description</label><textarea id="cf-desc" placeholder="What do you want to say?">${escapeHtml(createState.description)}</textarea></div>
+  <div class="field">
+    <label>Mood</label>
+    <div class="mood-grid">${MOODS.map(m=>`<button type="button" class="mood-opt ${createState.mood===m?'selected':''}" data-mood="${m}">${m}</button>`).join('')}</div>
+  </div>
+  <div class="field"><label>Tags (comma separated)</label><input type="text" id="cf-tags" placeholder="growth, friendship, dream" value="${escapeAttr(createState.tags)}"></div>
+  <div class="field-row">
+    <div class="field"><label>Delivery Date</label><input type="date" id="cf-date" value="${createState.deliveryDate}"></div>
+    <div class="field"><label>Delivery Time</label><input type="time" id="cf-time" value="${createState.deliveryTime}"></div>
+  </div>
+  <div class="field"><label>Recipient Email</label><input type="email" id="cf-email" value="${escapeAttr(createState.recipientEmail)}"></div>
+  <div class="form-actions-end">
+    <button class="btn btn-ghost" id="step2-back">Back</button>
+    <button class="btn btn-gold" id="step2-next">${totalSteps()===3 ? 'Continue to Recording' : 'Surprise Me On ✦'}</button>
+  </div>`;
+}
+
+function createStepRecord(){
+  const r = createState.recording;
+  const isAudio = createState.type === 'audio';
+  return `
+  <div class="record-box">
+    ${isAudio ? icon('mic') : icon('cam')}
+    <div style="font-family:var(--font-head); color:var(--text-light); margin-top:10px;">${isAudio ? 'Record your Audio Scroll' : 'Record your Video Scroll'}</div>
+    <div id="record-stage">${renderRecordStage()}</div>
+  </div>
+  <div class="form-actions-end">
+    <button class="btn btn-ghost" id="step3-back">Back</button>
+    <button class="btn btn-gold" id="step3-submit">Surprise Me On ✦</button>
+  </div>`;
+}
+
+function renderRecordStage(){
+  const r = createState.recording;
+  if(r.status === 'idle'){
+    return `
+    <div class="record-controls">
+      <button class="btn btn-purple btn-small" id="rec-start">${icon('mic')} Start Recording</button>
+    </div>
+    <div class="hint">Your browser may ask for microphone${createState.type==='video'?' and camera':''} access. If unavailable, a simulated recording will be used instead.</div>`;
+  }
+  if(r.status === 'recording' || r.status === 'paused'){
+    return `
+    ${createState.type==='video' && !r.simulated ? `<video id="live-preview" class="preview-video" autoplay muted playsinline></video>` : ''}
+    <div class="record-timer"><span class="record-dot" style="${r.status==='paused'?'display:none;':''}"></span> ${formatSecs(r.seconds)}</div>
+    <div class="waveform">${Array.from({length:18}).map((_,i)=>`<span style="animation-delay:${(i*0.07).toFixed(2)}s; ${r.status==='paused'?'animation-play-state:paused;':''}"></span>`).join('')}</div>
+    <div class="record-controls">
+      ${r.status==='recording' ? `<button class="btn btn-ghost btn-small" id="rec-pause">${icon('pause')} Pause</button>` : `<button class="btn btn-ghost btn-small" id="rec-resume">${icon('play')} Resume</button>`}
+      <button class="btn btn-gold btn-small" id="rec-stop">${icon('stop')} Stop</button>
+    </div>`;
+  }
+  if(r.status === 'done'){
+    return `
+    <div class="record-timer">${formatSecs(r.seconds)} captured</div>
+    ${r.blobUrl && createState.type==='audio' ? `<audio controls src="${r.blobUrl}" style="width:100%; margin-top:6px;"></audio>` : ''}
+    ${r.blobUrl && createState.type==='video' ? `<video controls class="preview-video" src="${r.blobUrl}"></video>` : ''}
+    ${!r.blobUrl ? `<div class="hint">Preview simulated — this environment didn't grant device access, but your scroll will still be saved.</div>` : ''}
+    <div class="record-controls">
+      <button class="btn btn-ghost btn-small" id="rec-redo">Record Again</button>
+    </div>`;
+  }
+  return '';
+}
+
+function formatSecs(s){
+  const m = Math.floor(s/60).toString().padStart(2,'0');
+  const sec = (s%60).toString().padStart(2,'0');
+  return `${m}:${sec}`;
+}
+
+function escapeAttr(str){ return (str||'').replace(/"/g,'&quot;'); }
+
+function bindCreateStepEvents(overlay){
+  if(createState.step === 1){
+    overlay.querySelectorAll('.type-opt').forEach(btn=>{
+      btn.onclick = ()=>{ createState.type = btn.dataset.type; renderCreateModal(overlay); };
+    });
+    const next = overlay.querySelector('#step1-next');
+    if(next) next.onclick = ()=>{ createState.step = 2; renderCreateModal(overlay); };
+  }
+  if(createState.step === 2){
+    overlay.querySelectorAll('.mood-opt').forEach(btn=>{
+      btn.onclick = ()=>{ createState.mood = btn.dataset.mood; overlay.querySelectorAll('.mood-opt').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); };
+    });
+    overlay.querySelector('#step2-back').onclick = ()=>{ captureDetailFields(overlay); createState.step = 1; renderCreateModal(overlay); };
+    overlay.querySelector('#step2-next').onclick = ()=>{
+      captureDetailFields(overlay);
+      if(!createState.title){ showToast('sparkle','Give it a title','Every scroll needs a name before it can be sealed.'); return; }
+      if(totalSteps() === 3){ createState.step = 3; renderCreateModal(overlay); }
+      else { finalizeMemory(overlay); }
+    };
+  }
+  if(createState.step === 3){
+    overlay.querySelector('#step3-back').onclick = ()=>{ stopMediaTracks(); createState.step = 2; renderCreateModal(overlay); };
+    overlay.querySelector('#step3-submit').onclick = ()=> finalizeMemory(overlay);
+    bindRecordEvents(overlay);
+  }
+}
+
+function captureDetailFields(overlay){
+  createState.title = overlay.querySelector('#cf-title')?.value.trim() || createState.title;
+  createState.description = overlay.querySelector('#cf-desc')?.value.trim() || createState.description;
+  createState.tags = overlay.querySelector('#cf-tags')?.value.trim() || createState.tags;
+  createState.deliveryDate = overlay.querySelector('#cf-date')?.value || createState.deliveryDate;
+  createState.deliveryTime = overlay.querySelector('#cf-time')?.value || createState.deliveryTime;
+  createState.recipientEmail = overlay.querySelector('#cf-email')?.value.trim() || createState.recipientEmail;
+}
+
+/* ---------- RECORDING LOGIC ---------- */
+function bindRecordEvents(overlay){
+  const startBtn = overlay.querySelector('#rec-start');
+  if(startBtn) startBtn.onclick = ()=> startRecording(overlay);
+  const pauseBtn = overlay.querySelector('#rec-pause');
+  if(pauseBtn) pauseBtn.onclick = ()=> pauseRecording(overlay);
+  const resumeBtn = overlay.querySelector('#rec-resume');
+  if(resumeBtn) resumeBtn.onclick = ()=> resumeRecording(overlay);
+  const stopBtn = overlay.querySelector('#rec-stop');
+  if(stopBtn) stopBtn.onclick = ()=> stopRecording(overlay);
+  const redoBtn = overlay.querySelector('#rec-redo');
+  if(redoBtn) redoBtn.onclick = ()=>{ createState.recording = { status:'idle', seconds:0, timer:null, mediaRecorder:null, chunks:[], blobUrl:null, stream:null, simulated:false }; renderCreateModal(overlay); };
+}
+
+async function startRecording(overlay){
+  const r = createState.recording;
+  const constraints = createState.type === 'video' ? { video:true, audio:true } : { audio:true };
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    r.stream = stream;
+    r.chunks = [];
+    const mr = new MediaRecorder(stream);
+    mr.ondataavailable = (e)=>{ if(e.data.size>0) r.chunks.push(e.data); };
+    mr.onstop = ()=>{
+      const blob = new Blob(r.chunks, { type: createState.type==='video' ? 'video/webm' : 'audio/webm' });
+      r.blobUrl = URL.createObjectURL(blob);
+    };
+    mr.start();
+    r.mediaRecorder = mr;
+    r.status = 'recording';
+    r.simulated = false;
+    renderCreateModal(overlay);
+    if(createState.type === 'video'){
+      const vid = document.getElementById('live-preview');
+      if(vid) vid.srcObject = stream;
+    }
+    runTimer(overlay);
+  }catch(err){
+    // fallback: simulated recording, no device access
+    r.status = 'recording';
+    r.simulated = true;
+    renderCreateModal(overlay);
+    runTimer(overlay);
+  }
+}
+
+function runTimer(overlay){
+  const r = createState.recording;
+  clearInterval(r.timer);
+  r.timer = setInterval(()=>{
+    if(r.status === 'recording'){
+      r.seconds += 1;
+      const timerEl = document.querySelector('.record-timer');
+      if(timerEl) timerEl.innerHTML = `<span class="record-dot"></span> ${formatSecs(r.seconds)}`;
+    }
+  }, 1000);
+}
+
+function pauseRecording(overlay){
+  const r = createState.recording;
+  r.status = 'paused';
+  if(r.mediaRecorder && r.mediaRecorder.state === 'recording') r.mediaRecorder.pause();
+  renderCreateModal(overlay);
+}
+function resumeRecording(overlay){
+  const r = createState.recording;
+  r.status = 'recording';
+  if(r.mediaRecorder && r.mediaRecorder.state === 'paused') r.mediaRecorder.resume();
+  renderCreateModal(overlay);
+}
+function stopRecording(overlay){
+  const r = createState.recording;
+  clearInterval(r.timer);
+  if(r.mediaRecorder && r.mediaRecorder.state !== 'inactive') r.mediaRecorder.stop();
+  stopMediaTracks();
+  r.status = 'done';
+  renderCreateModal(overlay);
+}
+function stopMediaTracks(){
+  const r = createState.recording;
+  if(r && r.stream){ r.stream.getTracks().forEach(t=>t.stop()); r.stream = null; }
+}
+
+/* ---------- FINALIZE ---------- */
+function finalizeMemory(overlay){
+  captureDetailFields(overlay);
+  if(!createState.title){ showToast('sparkle','Give it a title','Every scroll needs a name before it can be sealed.'); return; }
+  const typeMeta = MEMORY_TYPES.find(t=>t.id===createState.type);
+  const memory = {
+    id: uid(),
+    type: createState.type,
+    title: createState.title,
+    description: createState.description,
+    mood: createState.mood,
+    tags: createState.tags ? createState.tags.split(',').map(t=>t.trim()).filter(Boolean) : [],
+    deliveryDate: createState.deliveryDate,
+    deliveryTime: createState.deliveryTime,
+    recipientEmail: createState.recipientEmail,
+    createdAt: new Date().toISOString(),
+    status: createState.deliveryDate ? 'Scheduled' : 'Pending',
+    shareLink: `luminous.app/share/${uid()}`,
+    mediaUrl: createState.recording?.blobUrl || null,
+  };
+  state.memories.push(memory);
+  state.events.push({
+    id: uid(), title: memory.title, description: memory.description,
+    date: new Date().toISOString().slice(0,10), time: new Date().toTimeString().slice(0,5),
+    mood: memory.mood, category: 'Memory'
+  });
+  sendCapsuleToServer(memory); // sends this capsule to n8n -> Supabase, in addition to the local demo state above
+  closeCreateModal(overlay);
+  renderApp();
+  addXP(typeMeta.xp, `${typeMeta.label} sealed and ${memory.deliveryDate ? 'scheduled for delivery' : 'saved to your archive'}.`);
+}
+
+/* ======================================================================
+   MEMORY GRAPH
+   ====================================================================== */
+function renderGraphView(){
+  return `
+  <div class="page-title">The Memory Graph</div>
+  <div class="page-sub">A river of time connecting every milestone, chronologically.</div>
+  <div class="graph-toolbar">
+    <input type="text" id="graph-search" placeholder="Search events...">
+    <select id="graph-filter">
+      <option value="">All categories</option>
+      ${[...new Set(state.events.map(e=>e.category))].map(c=>`<option value="${c}">${c}</option>`).join('')}
+    </select>
+    <button class="btn btn-purple btn-small" id="graph-add-event">${icon('plus')} Add Event</button>
+  </div>
+  <div class="graph-wrap" id="graph-wrap">
+    <div class="graph-svg-host" id="graph-svg-host"></div>
+    <div class="graph-zoom-controls">
+      <button id="graph-zoom-in">+</button>
+      <button id="graph-zoom-out">−</button>
+    </div>
+  </div>
+  `;
+}
+
+function drawGraph(filterText='', filterCat=''){
+  const host = document.getElementById('graph-svg-host');
+  if(!host) return;
+  let events = [...state.events].sort((a,b)=> new Date(a.date+'T'+(a.time||'00:00')) - new Date(b.date+'T'+(b.time||'00:00')));
+  if(filterText) events = events.filter(e=> e.title.toLowerCase().includes(filterText.toLowerCase()));
+  if(filterCat) events = events.filter(e=> e.category === filterCat);
+
+  const wrap = document.getElementById('graph-wrap');
+  const W = Math.max(wrap.clientWidth, events.length * 160 * state.graphView.scale);
+  const H = wrap.clientHeight;
+  const midY = H/2;
+  const spacing = events.length > 1 ? (W - 120) / (events.length - 1) : 0;
+
+  let nodesSvg = '';
+  let pathPts = [];
+  events.forEach((e,i)=>{
+    const x = 60 + i*spacing;
+    const wob = Math.sin(i*1.3) * 36;
+    const y = midY + wob;
+    pathPts.push(`${x},${y}`);
+  });
+
+  let pathD = '';
+  if(pathPts.length){
+    pathD = 'M' + pathPts[0];
+    for(let i=1;i<pathPts.length;i++){
+      const [px,py] = pathPts[i-1].split(',').map(Number);
+      const [cx,cy] = pathPts[i].split(',').map(Number);
+      const mx = (px+cx)/2;
+      pathD += ` Q${mx},${py} ${cx},${cy}`;
+    }
+  }
+
+  events.forEach((e,i)=>{
+    const [x,y] = pathPts[i].split(',').map(Number);
+    nodesSvg += `
+      <g class="graph-node" data-event="${e.id}" style="cursor:pointer;" transform="translate(${x},${y})">
+        <circle r="16" fill="rgba(94,234,212,0.12)" stroke="var(--cyan-bright)" stroke-width="1.5"/>
+        <circle r="6" fill="var(--gold-bright)"/>
+        <text y="-26" text-anchor="middle" fill="#E9E7F7" font-family="Cinzel" font-size="11" opacity="0.9">${escapeHtml(e.title.length>18? e.title.slice(0,18)+'…':e.title)}</text>
+        <text y="32" text-anchor="middle" fill="#9C9DC4" font-family="JetBrains Mono" font-size="9">${fmtDate(e.date)}</text>
+      </g>`;
+  });
+
+  host.innerHTML = `
+  <svg width="${W}" height="${H}" style="transform:translateX(${state.graphView.offsetX}px);">
+    <path d="${pathD}" fill="none" stroke="url(#riverGrad)" stroke-width="3" opacity="0.6"/>
+    <defs>
+      <linearGradient id="riverGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#8B5CF6"/>
+        <stop offset="50%" stop-color="#5EEAD4"/>
+        <stop offset="100%" stop-color="#E8BE5C"/>
+      </linearGradient>
+    </defs>
+    ${nodesSvg}
+  </svg>`;
+
+  host.querySelectorAll('.graph-node').forEach(node=>{
+    node.addEventListener('click', ()=>{
+      const ev = events.find(e=>e.id === node.dataset.event);
+      if(ev) openEventDetail(ev);
+    });
+  });
+
+  // drag-to-pan
+  let isDown=false, startX=0, startOffset=0;
+  wrap.onmousedown = (e)=>{ isDown=true; startX=e.clientX; startOffset=state.graphView.offsetX; wrap.classList.add('dragging'); };
+  window.onmouseup = ()=>{ isDown=false; wrap.classList.remove('dragging'); };
+  window.onmousemove = (e)=>{
+    if(!isDown) return;
+    state.graphView.offsetX = Math.min(0, startOffset + (e.clientX - startX));
+    const svg = host.querySelector('svg');
+    if(svg) svg.style.transform = `translateX(${state.graphView.offsetX}px)`;
+  };
+}
+
+function openEventDetail(ev){
+  const panel = document.createElement('div');
+  panel.className = 'node-detail';
+  panel.innerHTML = `
+    <button class="modal-close" id="detail-close">${icon('close')}</button>
+    <div class="section-eyebrow">${ev.category}</div>
+    <h2 style="font-family:var(--font-head); color:var(--gold-bright); font-size:1.3rem; margin:8px 0 4px;">${escapeHtml(ev.title)}</h2>
+    <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--cyan-bright); margin-bottom:18px;">${fmtDate(ev.date)} · ${ev.time||''} · ${ev.mood||''}</div>
+    <p style="color:var(--text-muted); line-height:1.6;">${escapeHtml(ev.description||'No description added.')}</p>
+  `;
+  document.body.appendChild(panel);
+  panel.querySelector('#detail-close').onclick = ()=>panel.remove();
+}
+
+function openAddEventModal(){
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <button class="modal-close" id="ae-close">${icon('close')}</button>
+      <h2>Add a Life Event</h2>
+      <div class="modal-sub">Mark a milestone on your timeline.</div>
+      <div class="field"><label>Title</label><input type="text" id="ae-title" placeholder="e.g. Graduation"></div>
+      <div class="field"><label>Description</label><textarea id="ae-desc" placeholder="What happened?"></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Date</label><input type="date" id="ae-date"></div>
+        <div class="field"><label>Time</label><input type="time" id="ae-time" value="12:00"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Mood</label>
+          <select id="ae-mood">${MOODS.map(m=>`<option value="${m}">${m}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Category</label><input type="text" id="ae-category" placeholder="Milestone" value="Milestone"></div>
+      </div>
+      <div class="modal-actions"><button class="btn btn-gold btn-block" id="ae-submit">Add to Timeline</button></div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) overlay.remove(); });
+  overlay.querySelector('#ae-close').onclick = ()=>overlay.remove();
+  overlay.querySelector('#ae-submit').onclick = ()=>{
+    const title = overlay.querySelector('#ae-title').value.trim();
+    if(!title){ showToast('sparkle','Name your event','Give it a title before adding it to the timeline.'); return; }
+    state.events.push({
+      id: uid(), title, description: overlay.querySelector('#ae-desc').value.trim(),
+      date: overlay.querySelector('#ae-date').value || new Date().toISOString().slice(0,10),
+      time: overlay.querySelector('#ae-time').value, mood: overlay.querySelector('#ae-mood').value,
+      category: overlay.querySelector('#ae-category').value.trim() || 'Milestone'
+    });
+    overlay.remove();
+    renderApp();
+    showToast('sparkle','Event added','Your timeline just grew a new branch.');
+  };
+}
+
+/* ======================================================================
+   QUESTS
+   ====================================================================== */
+function renderQuestsView(){
+  return `
+  <div class="page-title">Goal Quests</div>
+  <div class="page-sub">Every goal becomes a quest. Walk the path one level at a time.</div>
+  <div class="form-actions-end" style="justify-content:flex-start; margin-bottom:8px;">
+    <button class="btn btn-purple btn-small" id="quest-add">${icon('plus')} New Quest</button>
+  </div>
+  ${state.goals.length ? state.goals.map(g=>questCard(g)).join('') : `<div class="empty-state">No quests yet. Start one to track a goal as a leveled journey.</div>`}
+  `;
+}
+
+function questCard(goal){
+  const doneCount = goal.levels.filter(l=>l.done).length;
+  return `
+  <div class="quest-card">
+    <div class="quest-card-head">
+      <h3>${escapeHtml(goal.title)}</h3>
+      <span class="quest-progress-label">${doneCount} / ${goal.levels.length} levels</span>
+    </div>
+    ${questPathHtml(goal, false)}
+  </div>`;
+}
+
+function questPathHtml(goal, mini){
+  const firstIncomplete = goal.levels.findIndex(l=>!l.done);
+  return `
+  <div class="quest-path">
+    <div class="quest-steps">
+      ${goal.levels.map((lvl,i)=>{
+        const status = lvl.done ? 'done' : (i === firstIncomplete ? 'next' : '');
+        return `
+        <div class="quest-step ${status}">
+          <div class="quest-line ${lvl.done ? 'done':''}"></div>
+          <div class="quest-node ${status}" ${status==='next' && !mini ? `data-quest="${goal.id}" data-level="${i}"` : ''}>${lvl.done ? '✓' : i+1}</div>
+          <div class="quest-step-label">${escapeHtml(lvl.name)}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function openAddQuestModal(){
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <button class="modal-close" id="aq-close">${icon('close')}</button>
+      <h2>Begin a New Quest</h2>
+      <div class="modal-sub">Turn a goal into five levels you can walk through.</div>
+      <div class="field"><label>Goal Title</label><input type="text" id="aq-title" placeholder="e.g. Run a Marathon"></div>
+      ${[1,2,3,4,5].map(n=>`<div class="field"><label>Level ${n}</label><input type="text" id="aq-level-${n}" placeholder="Level ${n} milestone"></div>`).join('')}
+      <div class="modal-actions"><button class="btn btn-gold btn-block" id="aq-submit">Start the Quest</button></div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) overlay.remove(); });
+  overlay.querySelector('#aq-close').onclick = ()=>overlay.remove();
+  overlay.querySelector('#aq-submit').onclick = ()=>{
+    const title = overlay.querySelector('#aq-title').value.trim();
+    if(!title){ showToast('sparkle','Name your quest','Give your goal a title before beginning.'); return; }
+    const levels = [1,2,3,4,5].map(n=>{
+      const v = overlay.querySelector(`#aq-level-${n}`).value.trim();
+      return { name: v || `Level ${n}`, done:false };
+    });
+    state.goals.push({ id: uid(), title, levels });
+    overlay.remove();
+    renderApp();
+    showToast('sparkle','Quest begun', `"${title}" is now on your path.`);
+  };
+}
+
+function completeQuestLevel(questId, levelIndex){
+  const goal = state.goals.find(g=>g.id===questId);
+  if(!goal) return;
+  if(goal.levels[levelIndex].done) return;
+  goal.levels[levelIndex].done = true;
+  renderApp();
+  addXP(25, `Completed "${goal.levels[levelIndex].name}" in "${goal.title}".`);
+}
+
+/* ======================================================================
+   ACHIEVEMENTS VIEW
+   ====================================================================== */
+function renderAchievementsView(){
+  const unlockedCount = Object.values(state.achievements).filter(Boolean).length;
+  return `
+  <div class="page-title">Achievements</div>
+  <div class="page-sub">${unlockedCount} of 6 unlocked on your journey so far.</div>
+  <div class="feature-grid">
+    ${Object.keys(ACHIEVEMENT_META).map(key=>{
+      const unlocked = state.achievements[key];
+      const meta = ACHIEVEMENT_META[key];
+      return `
+      <div class="scroll-card" style="${unlocked?'':'filter:grayscale(0.6); opacity:0.75;'}">
+        <div class="scroll-icon" style="${unlocked?'box-shadow:0 0 22px rgba(232,190,92,0.5); background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold));':''}">${icon('trophy')}</div>
+        <h3>${meta.name}</h3>
+        <p>${meta.desc}</p>
+        <div style="margin-top:10px;"><span class="tag-pill ${unlocked?'gold':''}">${unlocked?'Unlocked':'Locked'}</span></div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+/* ======================================================================
+   VIEW-SPECIFIC EVENT BINDING
+   ====================================================================== */
+function bindViewSpecificEvents(){
+  // dashboard "view all" links
+  document.querySelectorAll('.panel-head [data-view]').forEach(btn=>{
+    btn.onclick = ()=>{ state.view = btn.dataset.view; renderApp(); };
+  });
+  // dashboard / memories mem-row & mem-card click -> open detail-ish toast (lightweight)
+  document.querySelectorAll('[data-mem]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const mem = state.memories.find(m=>m.id===el.dataset.mem);
+      if(mem) openMemoryDetail(mem);
+    });
+  });
+
+  if(state.view === 'graph'){
+    drawGraph();
+    const search = document.getElementById('graph-search');
+    const filter = document.getElementById('graph-filter');
+    if(search) search.oninput = ()=> drawGraph(search.value, filter.value);
+    if(filter) filter.onchange = ()=> drawGraph(search.value, filter.value);
+    const addBtn = document.getElementById('graph-add-event');
+    if(addBtn) addBtn.onclick = openAddEventModal;
+    const zin = document.getElementById('graph-zoom-in');
+    const zout = document.getElementById('graph-zoom-out');
+    if(zin) zin.onclick = ()=>{ state.graphView.scale = Math.min(2.4, state.graphView.scale + 0.2); drawGraph(search?.value, filter?.value); };
+    if(zout) zout.onclick = ()=>{ state.graphView.scale = Math.max(0.5, state.graphView.scale - 0.2); drawGraph(search?.value, filter?.value); };
+  }
+
+  if(state.view === 'quests'){
+    const addBtn = document.getElementById('quest-add');
+    if(addBtn) addBtn.onclick = openAddQuestModal;
+    document.querySelectorAll('.quest-node[data-quest]').forEach(node=>{
+      node.addEventListener('click', ()=> completeQuestLevel(node.dataset.quest, parseInt(node.dataset.level,10)));
+    });
+  }
+}
+
+function openMemoryDetail(mem){
+  const panel = document.createElement('div');
+  panel.className = 'node-detail';
+  panel.innerHTML = `
+    <button class="modal-close" id="memdetail-close">${icon('close')}</button>
+    <div class="section-eyebrow">${MEMORY_TYPES.find(t=>t.id===mem.type)?.label}</div>
+    <h2 style="font-family:var(--font-head); color:var(--gold-bright); font-size:1.3rem; margin:8px 0 4px;">${escapeHtml(mem.title)}</h2>
+    <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--cyan-bright); margin-bottom:16px;">${mem.mood} · Sealed ${fmtDate(mem.createdAt.slice(0,10))}</div>
+    <p style="color:var(--text-muted); line-height:1.6; margin-bottom:16px;">${escapeHtml(mem.description||'No description added.')}</p>
+    ${mem.mediaUrl && mem.type==='audio' ? `<audio controls src="${mem.mediaUrl}" style="width:100%;"></audio>` : ''}
+    ${mem.mediaUrl && mem.type==='video' ? `<video controls class="preview-video" src="${mem.mediaUrl}"></video>` : ''}
+    <div class="divider"></div>
+    <div style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-faint); margin-bottom:8px;">DELIVERY</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <span style="font-size:0.85rem; color:var(--text-light);">${mem.deliveryDate ? fmtDate(mem.deliveryDate) + ' · ' + mem.deliveryTime : 'Not scheduled'}</span>
+      <span class="status-pill status-${(mem.status||'Pending').toLowerCase()}">${mem.status||'Pending'}</span>
+    </div>
+    ${mem.deliveryDate && mem.status !== 'Delivered' ? `<button class="btn btn-purple btn-small btn-block" id="simulate-deliver">${icon('portal')} Open the Time Portal Now</button>` : ''}
+    <div class="divider"></div>
+    <div style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-faint); margin-bottom:8px;">SHAREABLE LINK</div>
+    <div class="share-link-box"><span style="flex:1; overflow:hidden; text-overflow:ellipsis;">${mem.shareLink}</span><button class="btn btn-ghost btn-small" id="copy-link">Copy</button></div>
+  `;
+  document.body.appendChild(panel);
+  panel.querySelector('#memdetail-close').onclick = ()=>panel.remove();
+  const copyBtn = panel.querySelector('#copy-link');
+  if(copyBtn) copyBtn.onclick = ()=>{
+    navigator.clipboard?.writeText('https://'+mem.shareLink).catch(()=>{});
+    showToast('sparkle','Link copied','Your shareable time capsule link is on the clipboard.');
+  };
+  const simBtn = panel.querySelector('#simulate-deliver');
+  if(simBtn) simBtn.onclick = ()=>{
+    mem.status = 'Delivered';
+    panel.remove();
+    renderApp();
+    addXP(100, `"${mem.title}" arrived through the portal.`);
+  };
+}
+
+/* ---------- INIT ---------- */
+// On page load, check if there's already a logged-in Supabase session (e.g. after a refresh)
+// so the person doesn't have to sign in again every time they reopen the page.
+(async function initSession(){
+  try{
+    const { data } = await supabaseClient.auth.getSession();
+    if(data.session && data.session.user){
+      const meta = data.session.user.user_metadata || {};
+      state.user = { name: meta.name || data.session.user.email.split('@')[0] || 'Traveler', email: data.session.user.email, avatar: meta.avatar || 'dreamer' };
+      seedStarterContent();
+      state.view = 'dashboard';
+    }
+  }catch(err){
+    console.error('Session check failed:', err);
+  }
+  renderApp();
+})();
+
+</script>
+</body>
+</html>
